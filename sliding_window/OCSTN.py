@@ -42,11 +42,11 @@ from tensorflow.keras import regularizers
 table=[]
 table2=[]
 for time in range(1):
-    train=pd.read_csv("c"+str(time+1)+".csv",header=None)
-    train=np.array(train[0])
+    test=pd.read_csv("c"+str(time+1)+".csv",header=None)
+    test=np.array(test[0])
     d=660
-    train=np.array([train[n:n+d] for n in range(len(train)-d)])
-    train=train.reshape(train.shape[0],train.shape[1])
+    test=np.array([test[n:n+d] for n in range(len(test)-d)])
+    test=test.reshape(test.shape[0],test.shape[1])
     #train=readfile("X.pickle")
     #train_label=readfile("y.pickle")
     #train, x_test, train_label, y_test = train_test_split(train, train_label, test_size=0.2, random_state=time)
@@ -55,7 +55,7 @@ for time in range(1):
     #x_test=x_test.reshape(len(x_test)*2,330)
     #y_test=np.concatenate([y_test.reshape(-1,1),y_test.reshape(-1,1)],axis=1).reshape(len(y_test)*2)
 
-    M=train.shape[1]
+    M=test.shape[1]
     C=1
 
     I=np.zeros([M])
@@ -87,7 +87,6 @@ for time in range(1):
     #single=np.zeros([20,5])
     for i in range(1):
         clear_session()
-        Etest=np.zeros(len(train))
         #acc=np.zeros(5)
         for n in range(1):
             clear_session()
@@ -102,7 +101,7 @@ for time in range(1):
 
                 I_train[j]=I
             I_train=I_train
-            x_test=train[:]
+            x_test=test[:]
             x_test=x_test.reshape(len(x_test),M,C)
             #x_test=x_test.reshape(len(x_test),M,C)
             #y_label=np.zeros(len(y_test))
@@ -152,11 +151,11 @@ for time in range(1):
             #model.save(modelname)
             for time2 in range(20):
                 print(time2)
-                train=pd.read_csv("c"+str(time2+1)+".csv",header=None)
-                train=np.array(train[0])
+                test=pd.read_csv("c"+str(time2+1)+".csv",header=None)
+                test=np.array(test[0])
                 d=660
-                train=np.array([train[n:n+d] for n in range(len(train)-d)])
-                x_test=train.reshape(train.shape[0],train.shape[1])
+                test=np.array([test[n:n+d] for n in range(len(test)-d)])
+                x_test=test.reshape(test.shape[0],test.shape[1])
                 x_test=x_test.reshape(len(x_test),M,C)
                 f_test=model.predict(x_test)
                 I_train=I_train.reshape(I_train.shape[0],M ,C)
@@ -167,10 +166,10 @@ for time in range(1):
                 #f_test=f_test.reshape(f_test.shape[0],M,C)
                 # equation (12)
                 
-                Etest2=np.zeros(len(Etest))
+                Etest2=np.zeros(len(x_test))
                 for num in range(len(f_test)):
                     Etest2[num]=mean_absolute_error(goal_image,f_test[num])
-                Etest+=Etest2
+                #Etest+=Etest2
                 makefile(Etest2,"E_test660_c"+str(time2+1)+".pkl")
                 m=0
             #single[i][n]=roc_auc_score(y_label,(-1)*Etest2)
